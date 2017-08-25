@@ -3,12 +3,12 @@
         <ul>
             <li v-for="item in list">
                 <div class="left-block">
-                    <p class="title">{{item.operation}}<span v-if="item.type">{{item.type}}</span></p>
-                    <p class="des">{{item.time}}</p>
+                    <p class="title">{{item.sfb_trade_desc}}<span v-if="item.sfb_name">{{item.sfb_name}}</span></p>
+                    <p class="des">{{item.sfb_time}}</p>
                 </div>
                 <div class="right-block">
-                    <p class="title">{{item.money}}</p>
-                    <p class="des">{{item.res}}</p>
+                    <p class="title">{{item.sfb_amount}}</p>
+                    <p class="des">{{item.sfb_status}}</p>
                 </div>
             </li>
         </ul>
@@ -21,23 +21,35 @@
     export default {
         name: '',
         components: {},
+        created:function () {
+            this.$http({
+                port: 'getSfbTradeRecord',      // 接口port
+                url: '',  // 请求完整url 设置此项后 port 失效
+                method: 'get',                      // 请求方式 默认 get
+                openLoader: true                     // 是否开启loading 默认关闭
+            }).then((res) => {
+                if(res.code==0){
+                    this.list = res.data.data
+                }
+            })
+        },
         data () {
             return {
                 list:[
-                    {
-                        'operation':'快速取出',
-                        'type':'',
-                        'time':'2017-07-24  13:25:50',
-                        'money':'300元',
-                        'res':'确认成功'
-                    },
-                    {
-                        'operation':'卖出',
-                        'type':'虹现金管家货币E',
-                        'time':'2017-07-24  13:25:50',
-                        'money':'300元',
-                        'res':'确认成功'
-                    }
+//                    {
+//                        'sfb_trade_desc':'快速取出',
+//                        'sfb_name':'',
+//                        'sfb_time':'2017-07-24  13:25:50',
+//                        'sfb_amount':'300元',
+//                        'sfb_status':'确认成功'
+//                    },
+//                    {
+//                        'sfb_trade_desc':'卖出',
+//                        'sfb_name':'虹现金管家货币E',
+//                        'sfb_time':'2017-07-24  13:25:50',
+//                        'sfb_amount':'300元',
+//                        'sfb_status':'确认成功'
+//                    }
                 ],
             }
         }

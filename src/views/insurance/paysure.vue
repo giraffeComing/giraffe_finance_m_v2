@@ -1,28 +1,41 @@
 <template>
   <div class="page-view">
     <v-header :opts="headOpt"></v-header>
-    <div ref="comBody" class="paysure">
+    <div ref="comBody" class="paysure" v-if="sureInfo">
       <div>
         <div class="detail">
           <div class="bxtype">
             <div class="names">
-              <span>学生平安保险</span>
+              <span>{{sureInfo.productname}}</span>
             </div>
             <div class="types">
-              <span>支付金额</span>
-              <span>10元</span>
+              <span>投保人</span>
+              <span>{{sureInfo.username}}</span>
             </div>
             <div class="types">
-              <span>手续费</span>
-              <span>100元</span>
+              <span>被保险人</span>
+              <span>{{sureInfo.username}}</span>
             </div>
-            <div class="tips">交易日15:00后或非交易日，购买将在下一交易日开始保障</div>
+            <div class="types">
+              <span>生效时间</span>
+              <span>{{sureInfo.effectivedate}}</span>
+            </div>
+            <div class="types">
+              <span>保障期限</span>
+              <span>{{sureInfo.timelimit}}</span>
+            </div>
           </div>
-          <div class="bankselect"></div>
-          <div class="payBtn"><a href="javascript:;">立即支付</a></div>
+          <div class="payway">
+             <span class="zfb"></span>
+             <p class="payMoney">
+               <span class="name">支付金额</span>
+               <span class="num">{{sureInfo.fee}}.00 元</span>
+             </p>
+           </div>
         </div>
       </div>
     </div>
+    <div class="payBtn" v-if="sureInfo"><a href="javascript:;" @click="pay">确认支付</a></div>
   </div>
 </template>
 
@@ -31,6 +44,7 @@
   import VTabwrap from './tabview/tabwrap.vue'
   //    better scroller
   import BScroll from 'better-scroll';
+  const RES_OK = 0;  //请求成功
   export default {
     name: '',
     components: {
@@ -43,8 +57,30 @@
           name: "支付确认",
           backBtn: true
         },
-        comBodyScroll: ''
+        comBodyScroll: '',
+        sureInfo:{},
+        ordernum: ''
       }
+    },
+    created(){
+      this.ordernum = this.$route.query.ordernum || '201708221252128800';
+      this.$http({
+            port : 'getuserfillin',
+            data:{ordernum: this.ordernum},
+            openLoader:true
+        }).then((res)=>{
+            if(res.code === RES_OK){
+                console.log(res)
+                this.sureInfo = res.data;
+                this.$nextTick(() => {
+                    setTimeout(()=>{
+                        this.indexScroll();
+                    },30)
+                })
+            }else{
+               this.sureInfo = res.data;
+            }
+        })
     },
     methods:{
       indexScroll() {
@@ -52,16 +88,23 @@
           click: true,
           deceleration: 0.001,
         });
+      },
+      pay() {
+        this.$http({
+            port : 'payInsurance',
+            data:{ordernum: this.ordernum},
+            openLoader:true
+        }).then((res)=>{
+            if(res.code === RES_OK){
+                console.log(res)
+                this.$nextTick(() => {
+                    setTimeout(()=>{
+                        this.indexScroll();
+                    },30)
+                })
+            }
+        })
       }
-    },
-    mounted(){
-      //$nextTick这个方法保证了dom结构加载完成之后再执行
-      this.$nextTick(() => {
-        //结构复杂的地方再加个延迟
-        setTimeout(() => {
-          this.indexScroll();
-        }, 10)
-      })
     }
   }
 </script>
@@ -84,11 +127,13 @@
         .bxtype{
           background: #fff;
           margin: 0.2rem 0;
+          padding-bottom: 0.2rem;
           .names{
             height: 0.7rem;
             line-height: 0.7rem;
             font-size:0.3rem;
             border-bottom: 1px solid #eee;
+            margin-bottom: 0.2rem;
             span{
               padding-left: 0.2rem;
               color: #333;
@@ -96,51 +141,76 @@
             }
           }
           .types{
-            height: 0.9rem;
-            line-height: 0.9rem;
+            height: 0.7rem;
+            line-height: 0.7rem;
             font-size:0.3rem;
-            color: #999;
-            margin-left: 0.2rem;
-            border-bottom: 1px solid #eee;
+            margin-left: 0.6rem;
             @include clearfix;
             span{
               &:first-child{
                 float: left;
+                color: #333;
               }
             }
             span{
               &:last-child{
                 float: right;
-                padding-right: 0.2rem;
-                color: #ff484a;
-                font-weight: 700;
+                padding-right: 0.6rem;
+                color: #999;
               }
             }
           }
-          .tips{
-            height: 0.9rem;
-            line-height: 0.9rem;
-            padding-left:0.2rem;
-            font-size: 0.28rem;
-            color: #999;
+          
+        }
+        .payway{
+          background: #fff;
+          height: 1.4rem;
+          line-height: 0.54rem;
+          padding-left:0.5rem;
+          font-size: 0.28rem;
+          color: #999;
+          @include clearfix;
+          .zfb{
+            float: left;
+            width: 0.82rem;
+            height: 1.4rem;
+            background: url(./img/zfb_icon.png) no-repeat center center;
+            background-size: 0.82rem auto;
+          }
+          .payMoney{
+            float: right;
+            padding-right: 0.5rem;
+            margin-top: 0.16rem;
+            .name{
+              display: block;
+              text-align: right;
+              font-size: 0.28rem;
+              color: #333;
+            }
+            .num{
+              font-size: 0.36rem;
+              color: #ff484a;
+            }
           }
         }
-        .payBtn{
-          a{
-            display: block;
-            font-size: 0.3rem;
-            height: 0.9rem;
-            line-height: 0.9rem;
-            text-align: center;
-            margin-left: 0.2rem;
-            margin-right: 0.2rem;
-            background: #f14d4c;
-            color: #fff;
-            border-radius: 4px;
-            margin-top: 0.4rem;
-          }
-        }
+        
       }
     }
+    .payBtn{
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+        a{
+          display: block;
+          font-size: 0.3rem;
+          width: 100%;
+          height: 0.9rem;
+          line-height: 0.9rem;
+          text-align: center;
+          background: #f14d4c;
+          color: #fff;
+        }
+      }
   }
 </style>

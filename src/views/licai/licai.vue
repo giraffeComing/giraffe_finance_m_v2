@@ -2,53 +2,54 @@
     <div class="page-view">
         <v-header :opts="headerData"></v-header>
         <v-container :types="1">
-            <div class="banner-img"><img src="./banner.jpg" alt=""></div>
-
-            <!--block-->
-            <div class="block">
-                <div class="block-title">
-                    <div class="jj-title">
-                        <div class="jj-tag">体验宝</div>
-                    </div>
-                </div>
-                <div class="block-contain">
-                    <ul class="jj-ul">
-                        <li class="jj-li" v-for="(item,index) in listDataTiyan">
-                            <div class="jj-li-left">
-                                <p class="jj-num">{{item.num}}<span>%</span></p>
-                                <p>{{item.numDes}}</p>
-                            </div>
-                            <div class="jj-li-right" style="width: 2.6rem; overflow: hidden">
-                                <p class="jj-title">{{item.name}}</p>
-                                <!--因为有空格的所以用v-html绑-->
-                                <p class="jj-des" v-html="item.nameDes"></p>
-                            </div>
-                            <div class="jj-li-right-btn">
-                                <button>提取收益</button>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+            <div class="banner-img">
+                <v-swiper :opts="swiperOpts" :dataVal="banner"></v-swiper>
             </div>
+
+            <!--block-->
+            <!--<div class="block">-->
+                <!--<div class="block-title">-->
+                    <!--<div class="jj-title">-->
+                        <!--<div class="jj-tag">体验宝</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="block-contain">-->
+                    <!--<ul class="jj-ul">-->
+                        <!--<li class="jj-li" v-for="(item,index) in listDataTiyan">-->
+                            <!--<div class="jj-li-left">-->
+                                <!--<p class="jj-num">{{item.num}}<span>%</span></p>-->
+                                <!--<p>{{item.numDes}}</p>-->
+                            <!--</div>-->
+                            <!--<div class="jj-li-right" style="width: 2.6rem; overflow: hidden">-->
+                                <!--<p class="jj-title">{{item.name}}</p>-->
+                                <!--&lt;!&ndash;因为有空格的所以用v-html绑&ndash;&gt;-->
+                                <!--<p class="jj-des" v-html="item.nameDes"></p>-->
+                            <!--</div>-->
+                            <!--<div class="jj-li-right-btn">-->
+                                <!--<button>提取收益</button>-->
+                            <!--</div>-->
+                        <!--</li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</div>-->
             <!--block-->
 
 
             <!--block-->
             <div class="block">
                 <div class="block-title">
-                    <div class="jj-title">活期-<span>活期产品</span></div>
+                    <div class="jj-title"><div class="bg-tag01"></div>{{huoqi.title}} - <span>{{huoqi.desc}}</span></div>
                 </div>
                 <div class="block-contain">
                     <ul class="jj-ul">
-                        <li class="jj-li" v-for="(item,index) in listData">
+                        <li class="jj-li" v-for="(item,index) in huoqi.contents">
                             <div class="jj-li-left">
-                                <p class="jj-num">{{item.num}}<span>%</span></p>
-                                <p>{{item.numDes}}</p>
+                                <p class="jj-num">{{(item.profit * 100).toFixed(2)}}<span>%</span></p>
+                                <p>七日年化收益率</p>
                             </div>
                             <div class="jj-li-right">
-                                <p class="jj-title">{{item.name}}<span class="tag">灵活配置</span></p>
-                                <!--因为有空格的所以用v-html绑-->
-                                <p class="jj-des" v-html="item.nameDes"></p>
+                                <p class="jj-title">{{item.title}}<span class="tag">{{item.tag || '灵活配置'}}</span></p>
+                                <p class="jj-des">{{item.desc}}</p>
                             </div>
                         </li>
                     </ul>
@@ -57,31 +58,62 @@
             <!--block-->
 
 
+
             <!--block-->
             <div class="block">
                 <div class="block-title">
                     <div class="jj-title">
-                        长期理财-<span>新浪自营 稳定安全</span>
+                        <div class="bg-tag02"></div>{{dingqi.title}} - <span>{{dingqi.desc}}</span>
                         <span class="more">查看全部产品<i></i></span>
                     </div>
                 </div>
                 <div class="block-contain">
                     <ul class="jj-ul">
-                        <li class="jj-li" v-for="(item,index) in listDataLong">
-                            <div class="tagbg" v-if="item.state"></div>
-                            <h5 class="jj-h5">{{item.h5}}</h5>
+                        <li class="jj-li" v-for="(item,index) in dingqi.contents">
+                            <div class="tagbg" v-if="item.status"></div>
+                            <div class="jj-li-left">
+                                <p class="jj-num">{{(item.profit*100).toFixed(2)}}<span>%</span></p>
+                                <p>预期年化收益率</p>
+                            </div>
+                            <div class="jj-li-right">
+                                <p class="jj-title">{{item.title}}<span class="tag" v-if="item.tag">{{item.tag}}</span></p>
+                                <p class="jj-des">{{item.desc}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--block-->
+
+
+
+
+            <!--block-->
+            <div class="block">
+                <div class="block-title">
+                    <div class="jj-title">
+                        <div class="bg-tag03"></div>
+                        {{sinazy.title}} - <span>{{sinazy.desc}}</span>
+                        <!--<span class="more">查看全部产品<i></i></span>-->
+                    </div>
+                </div>
+                <div class="block-contain">
+                    <ul class="jj-ul">
+                        <li class="jj-li" v-for="(item,index) in sinazy.contents">
+                            <div class="tagbg" v-if="item.status"></div>
+                            <h5 class="jj-h5">{{item.title}}</h5>
                             <div style="overflow: hidden">
                                 <div class="jj-li-left">
-                                    <p class="jj-num">{{item.num}}<span>%</span></p>
-                                    <p>{{item.numDes}}</p>
+                                    <p class="jj-num">{{(item.profit*100).toFixed(2)}}<span>%</span></p>
+                                    <p>七日年化收益率</p>
                                 </div>
                                 <div class="jj-li-middle">
-                                    <p class="jj-num">{{item.date}}</p>
-                                    <p>{{item.datedes}}</p>
+                                    <p class="jj-num">{{item.time_limit}}个月</p>
+                                    <p>投资期限</p>
                                 </div>
                                 <div class="jj-li-s-right">
-                                    <p class="jj-num">{{item.price}}</p>
-                                    <p>{{item.pricedes}}</p>
+                                    <p class="jj-num">{{item.amount}}元</p>
+                                    <p>投资期限</p>
                                 </div>
                             </div>
                         </li>
@@ -92,7 +124,7 @@
 
 
             <!--block-->
-            <div class="block">
+            <!-- <div class="block">
                 <div class="block-title">
                     <div class="jj-title">热门投资</div>
                 </div>
@@ -103,7 +135,7 @@
                         <a href="#">短期</a>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!--block-->
 
         </v-container>
@@ -114,64 +146,16 @@
 <script>
     import VHeader from '../../components/layout/header/header.vue'
     import VFooter from '../../components/layout/footer/footer.vue'
+    import VSwiper from '../../components/plug/swiper/swiper.vue'
     import VContainer from '../../components/layout/container/container.vue'
+    const RES_OK = 0;  //请求成功
     export default {
         name: '',
         components: {
             VHeader,
             VFooter,
+            VSwiper,
             VContainer
-        },
-        created(){
-            this.$nextTick(()=>{
-                this.listDataTiyan=[
-                    {
-                        "id":"1",
-                        "num":"3.8",
-                        "numDes":"预期年化收益率",
-                        "name":"体验金专用",
-                        "nameDes":"体验金以3.8%计息 "
-                    }
-                ];
-                this.listData=[
-                    {
-                        "id":"1",
-                        "num":"4.3",
-                        "numDes":"七日年化收益率",
-                        "name":"旺财",
-                        "nameDes":"随时申请转出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保险公司承诺"
-                    }
-                ];
-                this.listDataLong=[
-                    {
-                        "h5":"新浪浪淘金十期",
-                        "id":"1",
-                        "num":"4.3",
-                        "numDes":"七日年化收益率",
-                        "name":"旺财",
-                        "nameDes":"随时申请转出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保险公司承诺",
-                        "date":"12个月",
-                        "datedes":"投资期限",
-                        "price":"100元",
-                        "pricedes":"投资期限",
-                        "state":true
-                    },
-                    {
-                        "h5":"新浪财富赢家计划7期",
-                        "id":"2",
-                        "num":"9.0",
-                        "numDes":"七日年化收益率",
-                        "name":"旺财",
-                        "nameDes":"随时申请转出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保险公司承诺",
-                        "date":"18个月",
-                        "datedes":"投资期限",
-                        "price":"100元",
-                        "pricedes":"投资期限",
-                        "state":false
-                    }
-                ]
-            })
-
         },
         data () {
             return {
@@ -179,15 +163,42 @@
                     name: "定期理财",
                     backBtn: false
                 },
-                listDataTiyan:'',
-                listData:'',
-                listDataLong:'',
+                swiperOpts:{
+                    pagination: '.swiper-pagination',
+                    slidesPerView: 1,
+                    speed:800,
+                    paginationClickable: true,
+                    loop: true,
+                    autoplay: 4000,
+                },
+                banner:[],
+                huoqi:'',
+                dingqi:'',
+                sinazy:'',
             }
+        },
+        created(){
+             this.$http({
+                port : 'getFixIndex',
+                openLoader:true
+            }).then((res)=>{
+                if(res.code === RES_OK){
+                    this.banner = res.data[0].contents.map(item => {
+                        return {
+                            imgSrc:item.image,
+                            href:item.url ? item.url : 'JavaScript:;'
+                        }
+                    })
+                    this.huoqi = res.data[1];
+                    this.dingqi = res.data[2];
+                    this.sinazy = res.data[3];
+                }
+            })
         }
     }
 </script>
 
-<style scoped lang="scss" rel="stylesheet/scss">
+<style lang="scss" rel="stylesheet/scss">
     .page-view{
         height: 100%;
         display: flex;
@@ -195,6 +206,9 @@
         .banner-img{
             height: 3.5rem;
             margin-bottom: .13rem;
+            .common-swiper .swiper-container {
+                height: 3.5rem !important;
+            }
             img{
                 width: 100%;
                 height: 3.5rem;
@@ -207,12 +221,33 @@
             .block-title{
                 height: .66rem;
                 border-bottom: 1px solid #eee;
-                padding: 0 0.2rem;
+                /*padding: 0 0.2rem;*/
                 line-height: .66rem;
                 overflow: hidden;
                 .jj-title{
                     font-size: .28rem;
                     color: #333;
+                    padding-left: .6rem;
+                    position: relative;
+                    .bg-tag01,.bg-tag02,.bg-tag03{
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: .6rem;
+                        height: .66rem;
+                    }
+                    .bg-tag01{
+                        background: url("tag01.png") no-repeat;
+                        background-size: 100% 100%;
+                    }
+                    .bg-tag02{
+                        background: url("tag02.png") no-repeat;
+                        background-size: 100% 100%;
+                    }
+                    .bg-tag03{
+                        background: url("tag03.png") no-repeat;
+                        background-size: 100% 100%;
+                    }
                     .jj-tag{
                         width: 1rem;
                         margin-top: .18rem;
@@ -247,7 +282,7 @@
                 .jj-ul{
                     .jj-li{
                         overflow: hidden;
-                        padding: 0.5rem 0;
+                        padding: 0.4rem 0;
                         font-size: .24rem;
                         color: #666;
                         border-bottom: 1px dashed #eee;
@@ -255,7 +290,7 @@
                         .tagbg{
                             position: absolute;
                             right: .34rem;
-                            top: .2rem;
+                            top: .4rem;
                             width: 1rem;
                             height: 1rem;
                             background: url("icon01.png") no-repeat;
@@ -269,6 +304,7 @@
                             color: #333;
                             padding: 0 .2rem;
                             margin-top: -.1rem;
+                            margin-bottom: .2rem;
                         }
                         .jj-li-left{
                             float: left;

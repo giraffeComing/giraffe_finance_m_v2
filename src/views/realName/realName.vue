@@ -5,7 +5,9 @@
         <div class="rn-bg"></div>
         <div class="rn-title">实名认证</div>
         <v-list></v-list>
-        <a href="javascript:;" class="rn-btn">立即认证</a>
+        <router-link :to="{path:'/setpassword'}">
+            <div class="rn-btn">立即认证</div>
+        </router-link>
     </div>
 </template>
 

@@ -7,7 +7,7 @@
         name:'ECharts',
         data() {
             return {
-
+                myChart:'',
             };
         },
         props: {
@@ -20,10 +20,15 @@
         },
         mounted() {
             // 基于准备好的dom，初始化echarts实例
-            let myChart = echarts.init(this.$refs.echarts);
+            this.myChart = echarts.init(this.$refs.echarts);
             // 制定图表的配置项和数据
-            let option = this.opts;
-            myChart.setOption(option);
+            this.myChart.setOption(this.opts);
+        },
+        watch:{
+            opts:function () {
+//                数据变了之后重新绘制eachart
+                this.myChart.setOption(this.opts);
+            }
         }
     }
 </script>

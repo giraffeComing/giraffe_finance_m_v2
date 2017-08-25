@@ -6,20 +6,20 @@
         <div class="details">
           <div class="assets">
             <div class="title">总资产 (元)</div>
-            <div class="num">992,282.23</div>
+            <div class="num">{{fundDetailData.asset_info.fund_asset}}</div>
           </div>
           <div class="info">
             <div class="cell">
               <span class="name">昨日收益 (元)</span>
-              <span class="num">1,1234,456.00</span>
+              <span class="num">{{fundDetailData.asset_info.fund_income_lastday}}</span>
             </div>
             <div class="cell">
               <span class="name">持仓收益 (元)</span>
-              <span class="num">1,1234,456.00</span>
+              <span class="num">{{fundDetailData.asset_info.fund_income_hold}}</span>
             </div>
             <div class="cell">
               <span class="name">持仓收益率</span>
-              <span class="num">11％</span>
+              <span class="num">{{fundDetailData.asset_info.fund_income_hold_rate}}</span>
             </div>
           </div>
         </div>
@@ -39,7 +39,8 @@
 </template>
 
 <script>
-  import VHeader from '../../components/layout/header/header.vue'
+    import MessageBox from '../../components/common/dialog'
+    import VHeader from '../../components/layout/header/header.vue'
   import VMarket from '../../components/plug/market/Market.vue'
   //    better scroller
   import BScroll from 'better-scroll';
@@ -47,10 +48,23 @@
     name: '',
     components: {
       VHeader,
-      VMarket
+      VMarket,
+      MessageBox
     },
     data () {
       return {
+          fundDetailData:{
+              "asset_info": {
+                  "fund_asset": 0, //总资产
+                  "fund_income_lastday": "0.00", //昨日收益
+                  "fund_income_hold": "0.00", //持仓受益
+                  "fund_income_hold_rate": 0 //持仓收益率
+              },
+              "fund_info": {
+                  "fund_code": "430001", //基金代码
+                  "fund_name": "新华股票" //基金名
+              }
+          },
         headOpt: {
           name: "",
           extra:"",
@@ -88,7 +102,31 @@
         this.marketOption.symbol = this.$route.params.fundcode;
         this.headOpt.name = '基金名称';
         this.headOpt.extra = '(' +this.$route.params.fundcode + ')';
-    
+
+          this.$http({
+              port : 'fundHoldInfo',      // 接口port
+              url : '',  // 请求完整url 设置此项后 port 失效
+              data : {
+                  fund_code : this.$route.params.fundcode                      // 基金编码
+              },
+              method: 'get',                      // 请求方式 默认 get
+              openLoader:true                     // 是否开启loading 默认关闭
+          }).then((res)=>{
+              if(res.code==0){
+                  this.fundDetailData=res.data
+//                  成功之后查一遍基金名字
+                  this.headOpt.name=res.data.fund_info.fund_name;
+              }else {
+                  MessageBox.alert({
+                      topic: '',               //标题
+                      title: res.msg,             //副标题
+                      message: '',   //提示文本
+                      textAlign : 'center',         //文字对齐方式  center right 默认：left
+                      okTxt : '知道了'              //确认按钮文本 默认 确定
+                  })
+              }
+          });
+
       }
     }
   }

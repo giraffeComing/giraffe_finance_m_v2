@@ -8,7 +8,7 @@
 
 <script>
     export default {
-        name: 'hello',
+        name: 'empty',
         data () {
             return {
                 icon:'',

@@ -2,16 +2,16 @@
     <div class="total">
         <div class="top">
             <div class="title">总资产（元）</div>
-            <div class="num">992,282.23</div>
+            <div class="num">{{opts.total}}</div>
         </div>
         <div class="bottom">
             <div class="block">
                 <p class="des">投资金额（元）</p>
-                <p class="money">1.00</p>
+                <p class="money">{{opts.amount}}</p>
             </div>
             <div class="block">
                 <p class="des">预期收益（元）</p>
-                <p class="money">40.00</p>
+                <p class="money">{{opts.profit}}</p>
             </div>
         </div>
     </div>
@@ -23,6 +23,9 @@
         components: {},
         data () {
             return {}
+        },
+        props:{
+            opts:''
         }
     }
 </script>

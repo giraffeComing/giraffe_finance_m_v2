@@ -6,16 +6,16 @@
         <div class="details">
           <div class="assets">
             <div class="title">总资产 (元)</div>
-            <div class="num">992,282.23</div>
+            <div class="num">{{fundCount.fund_total}}</div>
           </div>
           <div class="info">
             <div class="cell">
               <span class="name">昨日收益 (元)</span>
-              <span class="num">1,1234,456.00</span>
+              <span class="num">{{fundCount.fund_income_lastday}}</span>
             </div>
             <div class="cell">
               <span class="name">持仓收益 (元)</span>
-              <span class="num">1,1234,456.00</span>
+              <span class="num">{{fundCount.fund_income_hold}}</span>
             </div>
           </div>
         </div>
@@ -41,6 +41,11 @@
     },
     data () {
       return {
+          fundCount:{
+              "fund_total": "0.00", //基金总资产
+              "fund_income_lastday": "0.00", //昨日收益
+              "fund_income_hold": "0.00" //持仓收益
+          },
         headOpt: {
           name: "基金",
           backBtn: true
@@ -77,6 +82,16 @@
       }
     },
     created(){
+
+        this.$http({
+            port : 'fundAsset',      // 接口port
+            url : '',  // 请求完整url 设置此项后 port 失效
+            method: 'get',                      // 请求方式 默认 get
+            openLoader:true                     // 是否开启loading 默认关闭
+        }).then((res)=>{
+            this.fundCount = res.data           // 返回请求结果
+        });
+
         this.fundData.hold = [
           {
               fundname : '嘉实前沿科技',

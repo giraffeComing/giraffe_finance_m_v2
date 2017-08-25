@@ -7,18 +7,15 @@
           <h2 class="paytit succ">支付成功</h2>
           <div class="info">
             <ul>
-              <li><span class="name">学生平安保障险</span><span class="res">(80880822)</span></li>
-              <li><span class="name">收款方</span><span class="res">大地保险股份有限公司北京分公司</span></li>
-              <li><span class="name">订单</span><span class="res">1025460256</span></li>
-              <li><span class="name">保险单号</span><span class="res">1234567895246</span></li>
+              <li><span class="name">保险产品</span><span class="res">学生平安保障险</span></li>
+              <li><span class="name">保单号</span><span class="res">1025460256</span></li>
+              <li><span class="name">投保单号</span><span class="res">1025460256</span></li>
               <li><span class="name">下单时间</span><span class="res">2017-08-15</span></li>
+              <li><span class="name">订单号</span><span class="res">1234567895246</span></li>
             </ul>
           </div>
           <div class="stepwrap">
             <v-step :opts="step"></v-step>
-          </div>
-          <div class="question">
-            <p>对此订单有疑问？</p>
           </div>
         </div>
       </div>
@@ -104,8 +101,9 @@
     .paysucc {
       height: 100%;
       overflow: hidden;
-      background: #fff;
+      background: #f3f2f1;
       .detail {
+        background: #fff;
         .paytit{
           height: 2.2rem;
           line-height: 2.2rem;
@@ -114,7 +112,7 @@
           padding-left: 0.6rem;
           &.succ{
             color: #00ac43;
-            background: url(./paysucc_icon.png) no-repeat 2.5rem center;
+            background: url(./img/paysucc_icon.png) no-repeat 2.5rem center;
             background-size: 0.52rem auto;
           }
           &.fail{
@@ -137,16 +135,6 @@
         }
         .stepwrap{
           padding: 0.5rem 0 0.5rem 1.8rem;
-        }
-        .question{
-          background: #f3f2f1;
-          text-align: center;
-          padding-top: 1rem;
-          padding-bottom: 1.4rem;
-          p{
-             color: #ff484e;
-             font-size: 0.28rem;
-          }
         }
         .done{
           height: 0.9rem;

@@ -3,10 +3,10 @@
         <v-header :opts="headOpt"></v-header>
         <div class="container">
             <div class="detail">
-                <img src="./img/pic.png" alt="">
+                <img :src="personalData.user_img_url" alt="" class="head-img">
                 <div class="info">
-                    <span class="name">会飞的兔子</span>
-                    <span class="phone">15801549869</span>
+                    <span class="name">{{personalData.nickName}}</span>
+                    <span class="phone">{{personalData.mobileNo}}</span>
                 </div>
             </div>
             <ul class="business">
@@ -26,17 +26,17 @@
                 <li class="realInfo">
                     <p>
                         <span class="name">真实姓名</span>
-                        <span class="more">**某</span>
+                        <span class="more">{{personalData.realName}}</span>
                     </p>
                     <p>
                         <span class="name">身份证号码</span>
-                        <span class="more">130825********2752</span>
+                        <span class="more">{{personalData.idCardNo}}</span>
                     </p>
                 </li>
                 <li>
                     <i class="icons icon-phone"></i>
                     <span class="name">绑定手机</span>
-                    <span class="more">188****7788<i class="icons icon-right"></i></span>
+                    <span class="more">{{personalData.mobileNo}}<i class="icons icon-right"></i></span>
                     <!--<span class="more">未绑定<i class="icons icon-right"></i></span>-->
                 </li>
                 <li>
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+    import MessageBox from '../../components/common/dialog'
     import VHeader from '../../components/layout/header/header.vue'
     import VFooter from '../../components/layout/footer/footer.vue'
     export default {
@@ -60,11 +61,40 @@
             VHeader,
             VFooter
         },
+        created:function () {
+            //        我的中的头像图片和电话号码
+            this.$http({
+                port : 'getUserIdentity',      // 接口port
+                url : '',  // 请求完整url 设置此项后 port 失效
+                method: 'get',                      // 请求方式 默认 get
+                openLoader:true                     // 是否开启loading 默认关闭
+            }).then((res)=>{
+                if(res.code == 0){
+                    this.personalData= res.data.user_info
+                }
+                else {
+                    MessageBox.alert({
+                        topic: '',               //标题
+                        title: res.msg,             //副标题
+                        message: '',   //提示文本
+                        textAlign : 'center',         //文字对齐方式  center right 默认：left
+                        okTxt : '知道了'              //确认按钮文本 默认 确定
+                    })
+                }
+            });
+        },
         data () {
             return {
                 headOpt: {
                     name: "个人中心",
                     backBtn: true
+                },
+                personalData:{
+                    user_img_url:'',
+                    nickName:'',
+                    mobileNo:'',
+                    idCardNo:'',
+                    realName:''
                 }
             }
         }
@@ -94,7 +124,9 @@
         display: flex;
         flex-direction: column;
         background-color: $bg_color;
-
+        .head-img{
+            border-radius: 50%;
+        }
         .container {
             height: 100%;
             margin-top: .9rem;
@@ -152,6 +184,7 @@
                 min-height: .9rem;
                 padding-left: .74rem;
                 margin-left: .2rem;
+                line-height: .88rem;
                 border-top: 1px solid $border_color;
                 @include clearfix;
 
@@ -185,7 +218,6 @@
                 .name {
                     color: $color_gray;
                     font-size: .28rem;
-                    line-height: .88rem;
                     display: inline-block;
                     min-width: 1.16rem;
                 }

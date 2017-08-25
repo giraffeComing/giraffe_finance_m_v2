@@ -12,7 +12,10 @@
         <div class="tab-contains">
             <!--过渡效果-->
             <transition mode="out-in" name="fadeIn">
-                <component :is="currentView"></component>
+                <!--加上keep-alive就不会每次切换选项卡都去请求数据了-->
+                <keep-alive>
+                    <component :is="currentView"></component>
+                </keep-alive>
             </transition>
         </div>
     </div>

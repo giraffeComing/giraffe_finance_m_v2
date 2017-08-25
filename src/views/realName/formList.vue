@@ -5,8 +5,14 @@
                 <div class="title">{{item.name}}</div>
                 <!--正常的li-->
                 <div class="ipt" v-if="!item.yzm">
+                    <!--只读-->
+                    <div class="read-only" v-if="item.readOnly">{{item.val}}</div>
+                    <!--下拉选-->
+                    <select v-else-if="item.selectType" style="appearance:none;" class="ipt-select" name="" id="">
+                        <option v-for="option in item.options" v-bind:value="option.value">{{option.text}}</option>
+                    </select>
                     <!--input类型-->
-                    <input class="ipt-long" :type=item.type :placeholder="item.placeHolder">
+                    <input v-else class="ipt-long" :type=item.type :placeholder="item.placeHolder">
                 </div>
                 <!--验证码的li-->
                 <div class="ipt" v-else>
@@ -26,14 +32,25 @@
             return {
                 formIntData: [
                     {
-                        name: '交易密码',
-                        placeHolder: '请输入交易密码',
+                        name: '姓名',
+                        placeHolder: '请输入真实姓名',
                         type: 'text'
                     },
                     {
                         name: '身份证号',
                         placeHolder: '请输入身份证号',
                         type: 'number'
+                    },
+                    {
+                        name: '银行卡',
+                        selectType: true,
+                        placeHolder: '请输入银行卡卡号',
+                        options:[
+                            { text: '请选择', value: '请选择' },
+                            { text: '招商银行', value: '招商银行' },
+                            { text: '工商银行', value: '工商银行' },
+                            { text: '中国银行', value: '中国银行' }
+                        ]
                     },
                     {
                         name: '银行卡号',
@@ -100,6 +117,19 @@
                 font-size: .28rem;
                 width: 2.8rem;
                 border: none;
+            }
+            .ipt-select{
+                display: block;
+                margin-top: .3rem;
+                height: .4rem;
+                line-height: .4rem;
+                width: 100%;
+                padding: 0 .2rem;
+                font-size: .28rem;
+                border: none;
+                background: url("./arrow-right.png") no-repeat;
+                background-position: right center;
+                background-size: .17rem .25rem;
             }
             .yzm{
                 float: right;

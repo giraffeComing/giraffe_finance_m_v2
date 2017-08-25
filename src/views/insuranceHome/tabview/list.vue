@@ -1,11 +1,11 @@
 <template>
   <div class="list">
-    <div class="item" v-for="(item,index) in insData.list">
-      <a href="#">
-        <img :src="item.img" alt="">
-        <div class="title">{{item.title}}</div>
-        <div class="txt">{{item.desc}}</div>
-        <div class="price"><span>{{item.price}}</span>元起</div>
+    <div class="item" v-for="(item,index) in insData.list" @click="toDetail(item)">
+      <a href="javascript:;">
+        <img :src="item.logo" alt="">
+        <div class="title">{{item.name}}</div>
+        <div class="txt">{{item.brief}}</div>
+        <div class="price"><span>{{item.money}}</span>元起</div>
       </a>
     </div>
     <!--暂无持仓-->
@@ -21,20 +21,23 @@
       VEmpty
     },
     props: {
-      insData: ""
+      insData: ''
     },
     methods:{
+      toDetail(item) {
+        this.$router.push({
+            path:'/bxForm',
+            query:{id:item.id}
+        })
+      }
     },
     data () {
       return {
-        listData : '',
         emptyData: {
           icon:'type1',
           desc : '暂无记录'
         }
       }
-    },
-    created(){
     }
   }
 </script>

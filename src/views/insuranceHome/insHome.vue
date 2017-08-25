@@ -3,9 +3,8 @@
     <v-header :opts="headerData"></v-header>
     <div ref="comBody" class="insurance">
       <div>
-          <v-swiper :opts="swiperOpts" :dataVal="imgs"></v-swiper>
-        
-          <v-tabwrap :opts="insData"></v-tabwrap>
+          <v-swiper :opts="swiperOpts" :dataVal="bannerImg"></v-swiper>
+          <v-tabwrap v-if="loaded" :opts="insData"></v-tabwrap>
       </div>
     </div>
   </div>
@@ -13,16 +12,17 @@
 
 <script>
   import VHeader from '../../components/layout/header/header.vue'
-  import VSwiper from '../../components/plug/swiper/swiper.vue'
   import VTabwrap from './tabview/tabwrap.vue'
-  //    better scroller
+  import VSwiper from '../../components/plug/swiper/swiper.vue'
   import BScroll from 'better-scroll';
+
+  const RES_OK = 0;  //请求成功
     export default {
       name: '',
       components: {
         VHeader,
         VTabwrap,
-        VSwiper,
+        VSwiper
       },
       data () {
         return {
@@ -30,7 +30,6 @@
             name:'保险',
             backBtn:true
           },
-          comBodyScroll: '',
           swiperOpts:{
             pagination: '.swiper-pagination',
             slidesPerView: 1,
@@ -39,74 +38,50 @@
             loop: true,
             autoplay: 4000,
           },
-          imgs:[
-            {
-              "imgSrc":"../../static/s_1.png",
-              "href":"",
-            },
-            {
-              "imgSrc":"../../static/s_1.png",
-              "href":"",
-            }
-          ],
-          insData:''
+          bannerImg:[],
+          insData:'',
+          loaded: false
         }
       },
       methods:{
         indexScroll() {
-          this.comBodyScroll = new BScroll(this.$refs.comBody, {
-            click: true,
-            deceleration: 0.001,
-          });
+          if(!this.comBodyScroll){
+            this.comBodyScroll = new BScroll(this.$refs.comBody, {
+              click: true,
+              deceleration: 0.001,
+            })
+          }else{
+            this.comBodyScroll.refresh()
+          }
         }
       },
       created(){
-          this.insData = [
-            {
-                name:'车险',
-                list : [
-                  {
-                    img:'../../static/ins.png',
-                    title:'车险',
-                    desc : '意外伤害 2w元医疗',
-                    price: '300'
-                  },
-                  {
-                    img:'../../static/ins.png',
-                    title:'车险',
-                    desc : '意外伤害 2w元医疗',
-                    price: '300'
+          this.$http({
+            port : 'listInsurance',
+            openLoader:true
+          }).then((res)=>{
+            if (res.code === RES_OK) {
+              this.bannerImg = res.data.title.map(item => {
+                  return {
+                      imgSrc:item.imgsrc,
+                      href:item.href ? item.href : 'JavaScript:;'
                   }
-                ]
-            },
-            {
-                name:'意外险',
-                list : [
-                  {
-                    img:'../../static/ins.png',
-                    title:'意外险22',
-                    desc : '意外伤害 2w元医疗',
-                    price: '300'
-                  },
-                  {
-                    img:'../../static/ins.png',
-                    title:'意外险22',
-                    desc : '意外伤害 2w元医疗',
-                    price: '300'
-                  }
-                ]
+              })
+              this.insData = res.data.insurance.map(item =>{
+                return {
+                  name:item.name,
+                  type: item.type,
+                  list : item.data
+                }
+              })
+              this.loaded = true;
+              this.$nextTick(() => { // 渲染完毕
+               setTimeout(()=>{
+                  this.indexScroll();
+                },300)
+              })
             }
-            
-          ]
-      },
-      mounted(){
-        //$nextTick这个方法保证了dom结构加载完成之后再执行
-        this.$nextTick(() => {
-          //结构复杂的地方再加个延迟
-          setTimeout(() => {
-            this.indexScroll();
-          }, 10)
-        })
+          })
       }
     }
 </script>
@@ -120,6 +95,15 @@
     flex-direction: column;
     padding-top: .9rem;
     line-height: 1.1;
+    .advaImg{
+      height: 100%;
+      width: 100%;
+      img{
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    }
     .insurance {
       height: 100%;
       overflow: hidden;

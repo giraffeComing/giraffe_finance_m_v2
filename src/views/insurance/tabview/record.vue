@@ -3,15 +3,15 @@
     <div class="record">
       <div class="item" v-for="(item,index) in insData.record">
         <div class="title">
-          <span class="lab blue">{{item.lab}}</span>
+          <span class="lab blue">{{item.typename}}</span>
           <span class="name">{{item.name}}</span>
-          <span class="price">{{item.price}}</span>
+          <span class="price">{{item.position}}</span>
         </div>
         <div class="info">
-          <span class="time">保单到期时间：{{item.endtime}}</span>
+          <span class="time">保单到期时间：{{item.timelimit}}</span>
           <span class="name">保额</span>
         </div>
-        <div class="end"></div>
+        <div class="end" v-if="item.available==0"></div>
       </div>
       <!--暂无记录-->
       <v-empty v-if="insData.record.length<1" :opts="emptyData"></v-empty>
@@ -61,7 +61,7 @@
         background-size: cover;
         background-repeat: no-repeat;
         background-position: 50% 50%;
-        background-image: url("../icon-end.png");
+        background-image: url("../img/icon-end.png");
       }
       .title{
         position: relative;
@@ -69,7 +69,8 @@
         line-height: .9rem;
         color: #a0a0a0;
         font-size: .32rem;
-        padding-left: .68rem;
+        /*padding-left: .68rem;*/
+        padding-left: .88rem;
         @include clearfix;
       
         .lab{
@@ -92,7 +93,8 @@
         }
       }
       .info{
-        padding-left: .68rem;
+        /*padding-left: .68rem;*/
+        padding-left: .88rem;
         color: #a0a0a0;
         font-size: .24rem;
         @include clearfix;

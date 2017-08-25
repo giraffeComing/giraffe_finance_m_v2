@@ -5,7 +5,7 @@
         <v-header :opts="headerData" ref="sfHeader"></v-header>
         <div ref="comBodySf" class="scroller">
             <div>
-                <v-total></v-total>
+                <v-total :opts="licaiCount"></v-total>
                 <div class="bg-gray"></div>
                 <v-tab></v-tab>
             </div>
@@ -26,6 +26,16 @@
             VTotal,
             VTab,
         },
+        created:function () {
+//            this.$http({
+//                port : 'getFixAsset',      // 接口port
+//                url : '',  // 请求完整url 设置此项后 port 失效
+//                method: 'get',                      // 请求方式 默认 get
+//                openLoader:true                     // 是否开启loading 默认关闭
+//            }).then((res)=>{
+//                this.licaiCount = res.data           // 返回请求结果
+//            });
+        },
         data () {
             return {
                 comBodyScrollSf:'',
@@ -33,6 +43,11 @@
                     name: "理财",
                     backBtn: true
                 },
+                licaiCount: {
+                    total: 10,
+                    amount: 10,
+                    profit: 10
+                }
             }
         },
         mounted:function () {

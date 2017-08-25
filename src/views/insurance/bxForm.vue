@@ -6,77 +6,105 @@
         <div ref="comBodySf" class="scroller">
             <div>
               <div class="detail">
-                <div class="titwrap">
-                    <img src="" alt="">
+                <div class="titwrap" v-if="advImg">
+                    <v-swiper :opts="swiperOpts" :dataVal="advImg"></v-swiper>
                 </div>
                 <div class="bxEnsure">
                     <h2 class="tit">保险保障</h2>
-                    <div class="item">
-                        <label>意外伤害</label>
-                        <span>20万</span>
-                    </div>
-                    <div class="item">
-                        <label>意外医疗</label>
-                        <span>2万</span>
-                    </div>
-                    <div class="item">
-                        <label>意外住院补贴</label>
-                        <span>30元 / 天</span>
-                    </div>
-                    <div class="item">
-                        <label>救护车费用</label>
-                        <span>1000元</span>
+                    <div class="item" v-for="(item, key) in bxbzdata">
+                        <label>{{key}}</label>
+                        <span>{{item}}</span>
                     </div>
                 </div>
                 <div class="bxNr">
                     <h2 class="tit">保险内容</h2>
-                    <div class="item">
-                        <label>生效时间</label>
-                        <input type="text" value="2017-08-17" class="date"/>
-                    </div>
-                    <div class="item">
-                       <label>保障期限</label>
+                    <div class="item" v-if="plan&&plan.type==='select'">
+                       <label>{{plan.name}}</label>
                        <div class="choose">
-                            <select>
-                                <option value="1">1年</option>
+                            <select v-model="formData.planjihua">
+                                <option :value="item" v-for="(item, key) in plan.value">{{key}}</option>
                             </select>
                        </div>
                     </div>
                     <div class="item">
-                        <label>支付金额</label>
-                        <span>188元</span>
+                        <label>生效时间</label>
+                        <input type="text" value="2017-08-24" class="date"/>
+                    </div>
+                    <div class="item" v-if="expirydate&&expirydate.type==='select'">
+                       <label>{{expirydate.name}}</label>
+                       <div class="choose">
+                            <select v-model="formData.expirydate">
+                                <option :value="item" v-for="(item, key) in expirydate.value">{{key}}</option>
+                            </select>
+                       </div>
                     </div>
                 </div>
                 <div class="orderInfo">
-                    <h2 class="tit">购买人<span class="edit">编辑</span></h2>
-                    <div class="form">
-                        <div class="info-item">
-                            <label>姓名</label>
-                            <input type="text" name="holderName" maxlength="6" autocomplete="off"  value="小明"/>
+                    <div v-if="userInfo&&userInfo.name">
+                        <h2 class="tit">购买人<span class="edit" v-show="editStatu" @click="edit">{{editStatu}}</span></h2>
+                        <div class="form">
+                            <div class="info-item">
+                                <label>{{insuer.username.name}}</label>
+                                <input type="text" maxlength="6" autocomplete="off" :disabled="isDisabled" :value="userInfo.name" ref="username_inp"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.usercardnum.name}}</label>
+                                <input type="text" maxlength="18" autocomplete="off" :disabled="isDisabled" :value="userInfo.cardnum" ref="usercardnum_inp"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.usertelphone.name}}</label>
+                                <input type="tel"  maxlength="11" autocomplete="off" :disabled="isDisabled" :value="userInfo.phone" ref="usertelphone_inp"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.useraddress1.name}}</label>
+                                <input type="text"  autocomplete="off" :disabled="isDisabled" :value="userInfo.address" ref="useraddress_inp" @click="selectUseAdress"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.useraddress2.name}}</label>
+                                <input type="text"  autocomplete="off" :disabled="isDisabled" :value="userInfo.address1" ref="useraddress1_inp"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.userbirthday.name}}</label>
+                                <input type="text" class="date" autocomplete="off" :disabled="isDisabled" :value="userInfo.birthday" ref="userbirthday_inp"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.usereamil.name}}</label>
+                                <input type="text" maxlength="32" autocomplete="off" :disabled="isDisabled" :value="userInfo.email" ref="useremail_inp"/>
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <label>身份证号码</label>
-                            <input type="text" name="holdercardId" maxlength="18" autocomplete="off" value="622******311"/>
-                        </div>
-                        <div class="info-item">
-                            <label>手机号</label>
-                            <input type="tel" maxlength="11" name="holderMobile" autocomplete="off" value="178****9005">
-                        </div>
-                        <div class="info-item">
-                            <label>地址</label>
-                            <input type="text" name="holderArea" autocomplete="off" value="北京市 市辖区 海淀区">
-                        </div>
-                        <div class="info-item">
-                            <label>详细地址</label>
-                            <input type="text" name="holderAdress" autocomplete="off" value="马连洼街道">
-                        </div>
-                        <div class="info-item">
-                            <label>生日</label>
-                            <input type="text" class="date" name="holderBirstday" autocomplete="off" value="1993-12-05">
-                        </div>
-                        <div class="info-item">
-                            <label>邮箱</label>
-                            <input type="text" name="holderEmail" maxlength="32" autocomplete="off" value="903013546@qq.com">
+                    </div>
+                    <div v-else>
+                        <h2 class="tit">购买人</h2>
+                        <div class="form">
+                            <div class="info-item">
+                                <label>{{insuer.username.name}}</label>
+                                <input type="text" v-model.trim="formData.username" maxlength="6" autocomplete="off" placeholder="请输入姓名"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.usercardnum.name}}</label>
+                                <input type="text" v-model.trim="formData.usercardnum" maxlength="18" autocomplete="off" placeholder="请输入身份证号码"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.usertelphone.name}}</label>
+                                <input type="tel" v-model.trim="formData.usertelphone" maxlength="11" autocomplete="off" placeholder="请输入手机号"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.useraddress1.name}}</label>
+                                <input type="text" autocomplete="off" placeholder="请选择地址" readonly @click="selectUseAdress"/>
+                                <input v-if="result && result.province" type="text" :value="result.province.name"/>
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.useraddress2.name}}</label>
+                                <input type="text" v-model.trim="formData.useraddress1" autocomplete="off" placeholder="请输入详细地址">
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.userbirthday.name}}</label>
+                                <input type="text" class="date" v-model.trim="formData.userbirthday" autocomplete="off" placeholder="请选择生日">
+                            </div>
+                            <div class="info-item">
+                                <label>{{insuer.usereamil.name}}</label>
+                                <input type="text" maxlength="32" v-model.trim="formData.useremail" autocomplete="off" placeholder="请输入邮箱">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -84,49 +112,39 @@
                     <div class="info-item">
                         <label>被保人</label>
                         <div class="choose">
-                            <select>
-                                <option value="1">本人</option>
-                                <option value="2">父母</option>
-                                <option value="3">配偶</option>
-                                <option value="4">子女</option>
-                                <option value="5">兄妹</option>
-                                <option value="6">其他</option>
+                            <select @change="selectev" v-model="formData.applicantrelationship">
+                                <option :value="item" v-for="(item, key) in relation.value">{{key}}</option>
                             </select>
                         </div>
                     </div>
-                    <div class="hidden">
+                    <div class="hidden" v-if="!isMe">
                         <div class="info-item">
-                            <label>姓名</label>
-                            <input type="text" name="holderName" maxlength="6" autocomplete="off"  value="小明"/>
+                            <label>{{insuer.Insuredpersonname.name}}</label>
+                            <input type="text" v-model.trim="formData.Insuredpersonname" maxlength="6" autocomplete="off" placeholder="请输入姓名" />
                         </div>
                         <div class="info-item">
-                            <label>性别</label>
-                            <div class="choose">
-                                <select>
-                                    <option value="男">男</option>
-                                    <option value="女">女</option>
-                                </select>
-                            </div>
+                            <label>{{insuer.insuredpersoncard.name}}</label>
+                            <input type="text" v-model.trim="formData.insuredpersoncard" maxlength="18" autocomplete="off" placeholder="请输入身份证号码" />
                         </div>
                         <div class="info-item">
-                            <label>身份证号码</label>
-                            <input type="text" name="holdercardId" maxlength="18" autocomplete="off" value="622******311"/>
+                            <label>{{insuer.insuredpersonmobile.name}}</label>
+                            <input type="text" v-model.trim="formData.insuredpersonmobile" autocomplete="off"  placeholder="输入被保人手机号"/>
                         </div>
                         <div class="info-item">
-                            <label>地址</label>
-                            <input type="text" name="holderArea" autocomplete="off" value="北京市 市辖区 海淀区">
+                            <label>{{insuer.Insuredpersonaddress1.name}}</label>
+                            <input type="text" v-model.trim="formData.Insuredpersonadress" autocomplete="off"  placeholder="请选择地址"/>
                         </div>
                         <div class="info-item">
-                            <label>详细地址</label>
-                            <input type="text" name="holderAdress" autocomplete="off" value="马连洼街道">
+                            <label>{{insuer.Insuredpersonaddress2.name}}</label>
+                            <input type="text"  v-model.trim="formData.Insuredpersonadress1" autocomplete="off" placeholder="请输入详细地址"/>
                         </div>
                         <div class="info-item">
-                            <label>生日</label>
-                            <input type="text" class="date" name="holderBirstday" autocomplete="off" value="1993-12-05">
+                            <label>{{insuer.Insuredpersonage.name}}</label>
+                            <input type="text" class="date" v-model.trim="formData.Insuredpersonage" autocomplete="off" placeholder="请选择生日"/>
                         </div>
                         <div class="info-item">
-                            <label>邮箱</label>
-                            <input type="text" name="holderEmail" maxlength="32" autocomplete="off" value="903013546@qq.com">
+                            <label>{{insuer.Insuredpersonmail.name}}</label>
+                            <input type="text" v-model.trim="formData.Insuredpersonmail" maxlength="32" autocomplete="off" placeholder="请输入邮箱"/>
                         </div>
                     </div>
                 </div>
@@ -136,8 +154,9 @@
               </div>
             </div>
         </div>
+        <v-area :props-show="show" :props-result="result" v-on:result="areaResult"></v-area>
         <!--footer-->
-        <div class="footer" ref="sfFooter">
+        <div class="footer" ref="sfFooter" @click="tobuy">
             <a href="javascripr:;" class="btn">立即购买</a>
         </div>
     </div>
@@ -145,12 +164,16 @@
 
 <script>
     import VHeader from '../../components/layout/header/header.vue'
-    // better scroller
+    import VSwiper from '../../components/plug/swiper/swiper.vue'
+    import Toast from '../../components/common/toast/toast.js'
+    import VArea from '../../components/common/area/area.vue'
     import BScroll from 'better-scroll';
+    const RES_OK = 0;  //请求成功
     export default {
-        name: '',
         components: {
-            VHeader
+            VHeader,
+            VSwiper,
+            VArea
         },
         data () {
             return {
@@ -159,15 +182,100 @@
                     name: "填写保单",
                     backBtn: true
                 },
+                swiperOpts:{
+                    //pagination: '.swiper-pagination',
+                    slidesPerView: 1,
+                    speed:800,
+                    paginationClickable: true,
+                    //loop: true,
+                    //autoplay: 4000,
+                },
+                show: false,
+                result:{},
+                id: '',  //保险参数id
+                advImg:[],  //banner图
+                bxbzdata: [],  //保险保障
+                plan:{}, //保障计划
+                effectdate:{}, //生效时间
+                expirydate: {}, //保障期限
+                plan:{}, //保障计划
+                insuer:{},   //购买人、被保人显示信息
+                userInfo:{}, //接口初始化拉取购买人信息
+                isMe: true,  //是否选择本人
+                isDisabled: true, //表单是否可编辑
+                relation:{},
+                formData:{
+                    planjihua:''||'plan1',    //保险计划
+                    effectivedate:'',   //生效时间
+                    expirydate:''||'1',    //保障期限
+                    username:'',    //购买人姓名
+                    usercardnum:'', //购买人身份证号
+                    usertelphone:'', //购买人电话
+                    useraddress:'', //购买人地区
+                    useraddress1:'', //购买人详细地址
+                    userbirthday:'', //购买人生日
+                    useremail:'', //购买人邮箱
+
+                    applicantrelationship:''|| '1',  //与本人关系
+                    Insuredpersonname:'', //被保人姓名
+                    Insuredpersonmail:'', //被保人邮箱
+                    Insuredpersonadress:'', //被保人地址
+                    Insuredpersonadress1:'', //被保人详细
+                    Insuredpersonmail:'', //被保人邮箱
+                    Insuredpersonage:'', //被保人生日
+                    insuredpersonmobile:'', //被保人手机号
+                    insuredpersoncard:'', //被保人身份证号码
+
+                },
+                aCity:{11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外"},
+                ordernum: ''   //订单号 
             }
         },
-        mounted:function () {
-            //$nextTick这个方法保证了dom结构加载完成之后再执行
-            this.$nextTick(() => {
-                //结构复杂的地方再加个延迟
-                setTimeout(()=>{
-                    this.indexScrollSf();
-                },500)
+        computed:{
+            editStatu(){
+                return this.isDisabled ? true : false;
+            }
+        },
+        created(){
+            this.$http({
+                port : 'getInsuranceInfo',
+                data:{id: this.$route.query.id},
+                openLoader:true
+            }).then((res)=>{
+                if(res.code === RES_OK){
+                    this.advImg = res.data.logo.map(item => {
+                        return {
+                            imgSrc:item.imgsrc,
+                            href:item.href ? item.href : 'JavaScript:;'
+                        }
+                    })
+                    this.bxbzdata = res.data.coverage;
+                    this.plan = res.data.insurancecontent.planjihua;
+                    this.relation = res.data.insuer.applicantrelationship;
+                    this.insuer = res.data.insuer;
+                    console.log(res)
+                    this.expirydate = res.data.insurancecontent.expirydate;
+                    this.$nextTick(() => {
+                        setTimeout(()=>{
+                            this.indexScrollSf();
+                        },30)
+                    })
+                }
+            })
+            //购买人信息
+            this.$http({
+                port : 'getInuranceUserInfo',
+                data:{uid: '128915303510'},
+                openLoader:true
+            }).then((res)=>{
+                if(res.code === RES_OK){
+                    this.userInfo = res.data;
+                    this.$nextTick(() => {
+                        setTimeout(()=>{
+                            this.indexScrollSf();
+                        },300)
+                    })
+                }
             })
         },
         methods:{
@@ -180,8 +288,227 @@
                     click: true,
                     deceleration: 0.001,
                 });
+            },
+            selectev (e) {
+                e.target.value == 1 ? this.isMe = true : this.isMe = false;
+                this.$nextTick(() => {
+                    setTimeout(()=>{
+                        this.indexScrollSf();
+                    },10)
+                })
+            },
+            edit (event){
+                if (!event._constructed) {
+                    return
+                }
+                this.isDisabled = false;
+            },
+            selectUseAdress(){
+                this.show = true;
+            },
+            areaResult: function(show, result){
+                this.show = show;
+                this.result = result
+                console.log(this.result)
+            },
+
+            tobuy () {
+                
+                if(this.userInfo&&this.userInfo.name){   // 编辑后的购买人信息
+                    this.formData.username = this.$refs.username_inp.value;
+                    this.formData.usercardnum = this.$refs.usercardnum_inp.value;
+                    this.formData.usertelphone = this.$refs.usertelphone_inp.value;
+                    this.formData.useraddress = this.$refs.useraddress_inp.value;
+                    this.formData.useraddress1 = this.$refs.useraddress1_inp.value;
+                    this.formData.userbirthday = this.$refs.userbirthday_inp.value;
+                    this.formData.useremail = this.$refs.useremail_inp.value;
+                }
+                if (!this.isMe) {  //添加被保人校验
+                    const telReg=/^1[0-9][0-9]\d{8}$/;
+                    const emailReg=/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/; 
+                    //校验姓名
+                    if(!this.formData.Insuredpersonname){
+                        Toast('请输入被保人姓名!');
+                        return false;
+                    }
+                    //校验身份证
+                    if(!this.formData.insuredpersoncard){
+                        Toast('请输入被保人身份证号！');
+                        return false;
+                    }
+                    var iSum = 0 ;
+                    if(!/^\d{17}(\d|x)$/i.test(this.formData.insuredpersoncard)){
+                        Toast('被保人身份证格式错误！');
+                        return false;
+                    }
+                    this.formData.usercardnum = this.formData.insuredpersoncard.replace(/x$/i,"a"); 
+                    if(this.aCity[parseInt(this.formData.insuredpersoncard.substr(0,2))]==null){
+                        Toast('被保人身份证地区非法！');
+                        return false;
+                    }; 
+                    const sBirthday=this.formData.insuredpersoncard.substr(6,4)+"-"+Number(this.formData.insuredpersoncard.substr(10,2))+"-"+Number(this.formData.insuredpersoncard.substr(12,2)); 
+                    const d = new Date(sBirthday.replace(/-/g,"/")) ;
+                    if(sBirthday!=(d.getFullYear()+"-"+ (d.getMonth()+1) + "-" + d.getDate())){
+                        Toast('被保人身份证出生日期非法！');
+                        return false;
+                    }
+                    for(var i = 17;i>=0;i --){
+                        iSum += (Math.pow(2,i) % 11) * parseInt(this.formData.insuredpersoncard.charAt(17 - i),11);
+                    }
+                    if(iSum%11!=1){
+                        Toast('被保人身份证号非法！');
+                        return false;
+                    }; 
+                    //校验手机号
+                    if(!this.formData.insuredpersonmobile){
+                        Toast("请输入被保人手机号！");
+                        return false;
+                    }
+                    if(!telReg.test(this.formData.insuredpersonmobile.replace(/\s/g, ""))){
+                        Toast("请输入被保人正确的手机号！");
+                        return false;
+                    }
+                    //校验地址
+                    if(!this.formData.Insuredpersonadress){
+                        Toast('请选择被保人的地址!');
+                        return false;
+                    }
+                    //校验详细地址
+                    if(!this.formData.Insuredpersonadress1){
+                        Toast('请输入被保人详细地址!');
+                        return false;
+                    }
+                    //校验生日
+                    if(!this.formData.Insuredpersonage){
+                        Toast('请输入被保人生日!');
+                        return false;
+                    }
+                    //校验邮箱
+                    if(!this.formData.Insuredpersonmail){
+                        Toast("请输入被保人邮箱");
+                        return false;
+                    }
+                    if(!emailReg.test(this.formData.Insuredpersonmail.replace(/\s/g, ""))){
+                        Toast("请输入被保人正确的邮箱");
+                        return false;
+                    }
+                }
+
+                //本人校验
+                const telReg=/^1[0-9][0-9]\d{8}$/;
+                const emailReg=/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/; 
+                //校验姓名
+                if(!this.formData.username){
+                    Toast('请输入姓名!');
+                    return false;
+                }
+                //校验身份证
+                if(!this.formData.usercardnum){
+                    Toast('请输入您的身份证号码！');
+                    return false;
+                }
+                var iSum = 0 ;
+                if(!/^\d{17}(\d|x)$/i.test(this.formData.usercardnum)){
+                    Toast('身份证长度或格式错误！');
+                    return false;
+                }
+                this.formData.usercardnum = this.formData.usercardnum.replace(/x$/i,"a"); 
+                if(this.aCity[parseInt(this.formData.usercardnum.substr(0,2))]==null){
+                    Toast('您的身份证地区非法！');
+                    return false;
+                }; 
+                const sBirthday=this.formData.usercardnum.substr(6,4)+"-"+Number(this.formData.usercardnum.substr(10,2))+"-"+Number(this.formData.usercardnum.substr(12,2)); 
+                const d = new Date(sBirthday.replace(/-/g,"/")) ;
+                if(sBirthday!=(d.getFullYear()+"-"+ (d.getMonth()+1) + "-" + d.getDate())){
+                    Toast('身份证上的出生日期非法！');
+                    return false;
+                }
+                for(var i = 17;i>=0;i --){
+                     iSum += (Math.pow(2,i) % 11) * parseInt(this.formData.usercardnum.charAt(17 - i),11);
+                }
+                if(iSum%11!=1){
+                    Toast('您输入的身份证号非法！');
+                    return false;
+                }; 
+                //校验手机号
+                if(!this.formData.usertelphone){
+                    Toast("请输入手机号！");
+                    return false;
+                }
+                if(!telReg.test(this.formData.usertelphone.replace(/\s/g, ""))){
+                    Toast("请输入正确的手机号！");
+                    return false;
+                }
+                //校验地址
+                if(!this.formData.useraddress){
+                    Toast('请选择您的地址!');
+                    return false;
+                }
+                //校验详细地址
+                if(!this.formData.useraddress1){
+                    Toast('请输入您详细地址!');
+                    return false;
+                }
+                //校验生日
+                if(!this.formData.userbirthday){
+                    Toast('请输入生日!');
+                    return false;
+                }
+                //校验邮箱
+                if(!this.formData.useremail){
+                    Toast("请输入邮箱");
+                    return false;
+                }
+                if(!emailReg.test(this.formData.useremail.replace(/\s/g, ""))){
+                    Toast("请输入正确的邮箱");
+                    return false;
+                }
+
+                //请求获得订单号
+                this.$http({
+                    port : 'getquotations',
+                    //method: 'post',
+                    data:{
+                        pid:this.$route.query.id,
+                        uid:'',
+                        planjihua: this.formData.planjihua,
+                        effectivedate: this.formData.effectivedate,
+                        expirydate: this.formData.expirydate,
+                        username: this.formData.username,
+                        usercardnum: this.formData.usercardnum,
+                        usertelphone: this.formData.usertelphone,
+                        useraddress: this.formData.useraddress,
+                        useraddress1: this.formData.useraddress1,
+                        userbirthday: this.formData.userbirthday,
+                        useremail: this.formData.useremail,
+                        applicantrelationship: this.formData.applicantrelationship,
+                        Insuredpersonname: this.formData.Insuredpersonname,
+                        Insuredpersonmail: this.formData.Insuredpersonmail,
+                        Insuredpersonage: this.formData.Insuredpersonage,
+                        insuredpersonmobile: this.formData.insuredpersonmobile,
+                        insuredpersoncard: this.formData.insuredpersoncard,
+                    },
+                    openLoader:true
+                }).then((res)=>{
+                    if(res.code === RES_OK){
+                        this.ordernum = res.data.orderNum;
+                        //请求成功 跳转 传订单号
+                        this.$router.push({
+                            path:'/paysure',
+                            query:{ordernum:this.ordernum}
+                        })
+                        this.$nextTick(() => {
+                            setTimeout(()=>{
+                                this.indexScrollSf();
+                            },30)
+                        })
+                    }else{
+                        Toast(res.msg);
+                        return false;
+                    }
+                })
             }
-        }
+        },
     }
 </script>
 
@@ -275,7 +602,7 @@
                      float: right;
                      height: 100%;
                      text-align: right;
-                     background: url(./right_arrow.png) no-repeat right center;
+                     background: url(./img/right_arrow.png) no-repeat right center;
                      background-size: 0.14rem auto;
                      padding-right: 0.3rem;
                      margin-right: 0.2rem;
@@ -292,7 +619,7 @@
                          height: 100%;
                          border: none;
                          outline: none;
-                         background: url(./right_arrow.png) no-repeat right center;
+                         background: url(./img/right_arrow.png) no-repeat right center;
                          background-size: 0.14rem auto;
                          padding-right: 0.3rem;
                          margin-right: 0.2rem;
@@ -317,7 +644,7 @@
                         width: 1.2rem;
                         text-indent: 999em;
                         height: 100%;
-                        background: url(./edit.png) no-repeat center center;
+                        background: url(./img/edit.png) no-repeat center center;
                         background-size: 0.35rem auto;
                     }
                }
@@ -335,6 +662,7 @@
                     }
                     input{
                         float: right;
+                        background:#fff;
                         width: 65%;
                         height: 100%;
                         text-align: right;
@@ -346,7 +674,7 @@
                         outline: none;
                     }
                     .date{
-                        background: url(./right_arrow.png) no-repeat right center;
+                        background: url(./img/right_arrow.png) no-repeat right center;
                         background-size: 0.14rem auto;
                     }
                }
@@ -378,7 +706,7 @@
                         outline: none;
                     }
                     .date{
-                        background: url(./right_arrow.png) no-repeat right center;
+                        background: url(./img/right_arrow.png) no-repeat right center;
                         background-size: 0.14rem auto;
                     }
                     .choose{
@@ -389,7 +717,7 @@
                             height: 100%;
                             border: none;
                             outline: none;
-                            background: url(./right_arrow.png) no-repeat right center;
+                            background: url(./img/right_arrow.png) no-repeat right center;
                             background-size: 0.14rem auto;
                             padding-right: 0.3rem;
                             margin-right: 0.2rem;
@@ -416,7 +744,7 @@
             bottom: 0;
             overflow: hidden;
             line-height: 1.65rem;
-            z-index: 999;
+            z-index: 99;
             background: #ff484a;
             color: #fff;
             line-height: 1rem;

@@ -19,7 +19,6 @@ import VFundDetail from '../views/fund/fundDetail.vue'
 import VFunHistory from '../views/fund/funHistory.vue'
 
 import VInsurance from '../views/insurance/insurance.vue'
-
 import VPaysucc from '../views/insurance/paysucc.vue'
 import VPaysure from '../views/insurance/paysure.vue'
 import VBxForm from '../views/insurance/bxForm.vue'
@@ -36,6 +35,13 @@ import VAsset from '../views/myAsset/asset.vue'
 import VRealName from '../views/realName/realName.vue'
 import VSetpassword from '../views/setPassWord/setPassWord.vue'
 import VIndexFund from '../views/indexFund/indexFund.vue'
+import VCardList from '../views/cardList/cardList.vue'
+import VAddCard from '../views/addCard/addCard.vue'
+import VJijinMarket from '../views/indexFundMarket/JijinListView.vue'
+
+
+import VHelp from '../views/help/help.vue'
+
 
 
 Vue.use(Router)
@@ -61,6 +67,12 @@ export default new Router({
           path: '/indexfund',
           component: VIndexFund,
           name: 'VIndexFund',
+      },
+      //首页-基金-基金超市
+      {
+          path: '/indexfundmarket',
+          component: VJijinMarket,
+          name: 'VJijinMarket',
       },
       //我的
       {
@@ -104,6 +116,18 @@ export default new Router({
           component: VSetpassword,
           name: 'VSetpassword',
       },
+      //银行卡
+      {
+          path: '/cardlist',
+          component: VCardList,
+          name: 'VCardList',
+      },
+      //添加银行卡
+      {
+          path: '/addcard',
+          component: VAddCard,
+          name: 'VAddCard',
+      },
       //基金
       {
           path: '/fund',
@@ -134,6 +158,24 @@ export default new Router({
           component: VInsHome,
           name: 'VInsHome',
       },
+      //保险详情页(填写保单页)
+      {
+          path: '/bxForm',
+          component: VBxForm,
+          name: 'VBxForm',
+      },
+     //保险支付确认页
+      {
+          path: '/paysure',
+          component: VPaysure,
+          name: 'VPaysure',
+      },
+     //保险支付完成页
+      {
+          path: '/paysucc',
+          component: VPaysucc,
+          name: 'VPaysucc',
+      },
       //借钱
       {
           path: '/borrow',
@@ -162,6 +204,12 @@ export default new Router({
                   name: 'swiper'
               },
           ]
+      },
+        //联系客服
+      {
+        path: '/help',
+        component: VHelp,
+        name: 'VHelp',
       },
       //404页面
       {

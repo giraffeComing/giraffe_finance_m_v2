@@ -68,7 +68,8 @@
             right: 0;
             top: 0;
             height: .9rem;
-            color: #5781bd;
+            /*color: #5781bd;*/
+            color: #333;
             font-size: .3rem;
             padding: 0 .2rem;
         }

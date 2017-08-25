@@ -1,0 +1,14 @@
+/**
+ * Created by pengfei25 on 2017/8/21.
+ */
+
+// 是否开发环境
+const isDev = process.env.NODE_ENV == "development";
+const devUri = 'http://jr.sina.cn:81/public/sina_finance_api/web/index.php/apife/';
+
+const config = {
+    //接口路径
+    PORT_URI: isDev ? devUri : devUri,
+
+};
+export default config;

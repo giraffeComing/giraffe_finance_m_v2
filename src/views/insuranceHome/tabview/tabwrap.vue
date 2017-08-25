@@ -38,13 +38,13 @@
         this.insData = this.opts[i];
       },
       getLength(length){
-          return { width : 100/length + '%'};
+          return { width : 100 / length + '%'};
       }
     },
     data () {
       return {
         now:0,
-        insData:''
+        insData:[]
       }
     },
     created(){
