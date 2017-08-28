@@ -31,7 +31,7 @@
             
             setTimeout(() => {
               this.indexScroll();
-            }, 10)
+            }, 100)
           })
         },
         methods: {
@@ -48,10 +48,14 @@
               return flag;
           },
           indexScroll() {
-            this.comBodyScroll = new BScroll(this.$refs.comBody, {
-              click: true,
-              deceleration: 0.001
-            });
+            if(!this.comBodyScroll){
+              this.comBodyScroll = new BScroll(this.$refs.comBody, {
+                click: true,
+                deceleration: 0.001,
+              })
+            }else{
+              this.comBodyScroll.refresh()
+            }
           },
         },
         data () {

@@ -3,26 +3,26 @@
 
 
         <div class="item" v-for="(item,index) in fundData">
-            <div class="title">{{item.fundname}}
+            <div class="title">{{item.fix_name}}
                 <span class="time">
-                    {{item.time}}<span class="state">{{item.state}}</span>
+                    {{item.fix_endtime}}<span class="state">{{item.state}}</span>
                 </span>
             </div>
             <div class="info">
                 <div class="cell">
-                    <div class="num">{{item.value}}</div>
+                    <div class="num">{{item.fix_amount}}</div>
                     <div class="name">投资金额</div>
                 </div>
                 <div class="cell">
-                    <div class="num">{{item.earn}}</div>
+                    <div class="num">{{item.fix_year_profit_ratio}}</div>
                     <div class="name">预期年化收益率</div>
                 </div>
                 <div class="cell">
-                    <div class="num">{{item.holdearn}}</div>
+                    <div class="num">{{item.fix_profit}}</div>
                     <div class="name">预期收益</div>
                 </div>
 
-                <div class="btns" v-if="item.showbtn">
+                <div class="btns" v-if="item.fix_buy_able==1">
                     <!--a or input-->
                     <a href="javascript:;" class="btn-gray">购买</a>
                     <a href="javascript:;" class="btn-red">赎回</a>
@@ -43,9 +43,16 @@
         components: {
             VEmpty
         },
-//        props: {
-//            fundData: ""
-//        },
+        created:function () {
+            this.$http({
+                port : 'getFixHold',      // 接口port
+                url : '',  // 请求完整url 设置此项后 port 失效
+                method: 'get',                      // 请求方式 默认 get
+                openLoader:true                     // 是否开启loading 默认关闭
+            }).then((res)=>{
+                this.fundData = res.data           // 返回请求结果
+            });
+        },
         methods:{
 
         },
@@ -56,26 +63,7 @@
                     desc : '当前没有持有项目',
                     btn : '前往购买'
                 },
-                fundData:[
-                    {
-                        fundname : '新浪浪淘金九期',
-                        value : '10.232.20',
-                        earn : '0.50',
-                        holdearn : '30.50',
-                        time: '2018-08-10',
-                        state: '结息',
-                        showbtn: false
-                    },
-                    {
-                        fundname : '微聚理财-短期90天计划',
-                        value : '10.232.20',
-                        earn : '10.23',
-                        holdearn : '10.20',
-                        time: '2018-08-11',
-                        state: '结息',
-                        showbtn: true
-                    }
-                ]
+                fundData:[]
             }
         }
     }

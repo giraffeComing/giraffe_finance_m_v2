@@ -84,10 +84,14 @@
     },
     methods:{
       indexScroll() {
-        this.comBodyScroll = new BScroll(this.$refs.comBody, {
-          click: true,
-          deceleration: 0.001,
-        });
+        if(!this.comBodyScroll){
+          this.comBodyScroll = new BScroll(this.$refs.comBody, {
+            click: true,
+            deceleration: 0.001,
+          })
+        }else{
+          this.comBodyScroll.refresh()
+        }
       },
       pay() {
         this.$http({
@@ -100,7 +104,7 @@
                 this.$nextTick(() => {
                     setTimeout(()=>{
                         this.indexScroll();
-                    },30)
+                    },300)
                 })
             }
         })

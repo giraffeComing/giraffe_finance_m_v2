@@ -28,7 +28,7 @@
                     </div>
                     <div class="item">
                         <label>生效时间</label>
-                        <input type="text" value="2017-08-24" class="date"/>
+                        <input type="text" :value="effectdate" class="date" readonly @click="bzDate"/>
                     </div>
                     <div class="item" v-if="expirydate&&expirydate.type==='select'">
                        <label>{{expirydate.name}}</label>
@@ -57,7 +57,7 @@
                             </div>
                             <div class="info-item">
                                 <label>{{insuer.useraddress1.name}}</label>
-                                <input type="text"  autocomplete="off" :disabled="isDisabled" :value="userInfo.address" ref="useraddress_inp" @click="selectUseAdress"/>
+                                <input type="text"  autocomplete="off" :disabled="isDisabled" :value="userInfo.address" ref="useraddress_inp" @click="selectUseAdress"/>                                <input type="text"  autocomplete="off" :disabled="isDisabled" :value="userInfo.address" ref="useraddress_inp" @click="selectUseAdress"/>                                                                                       
                             </div>
                             <div class="info-item">
                                 <label>{{insuer.useraddress2.name}}</label>
@@ -91,7 +91,6 @@
                             <div class="info-item">
                                 <label>{{insuer.useraddress1.name}}</label>
                                 <input type="text" autocomplete="off" placeholder="请选择地址" readonly @click="selectUseAdress"/>
-                                <input v-if="result && result.province" type="text" :value="result.province.name"/>
                             </div>
                             <div class="info-item">
                                 <label>{{insuer.useraddress2.name}}</label>
@@ -155,6 +154,7 @@
             </div>
         </div>
         <v-area :props-show="show" :props-result="result" v-on:result="areaResult"></v-area>
+        <v-calendar @onChange="chooseDate" v-model="succDate.calendarShow" :minDate="succDate.minDate"></v-calendar>
         <!--footer-->
         <div class="footer" ref="sfFooter" @click="tobuy">
             <a href="javascripr:;" class="btn">立即购买</a>
@@ -167,13 +167,16 @@
     import VSwiper from '../../components/plug/swiper/swiper.vue'
     import Toast from '../../components/common/toast/toast.js'
     import VArea from '../../components/common/area/area.vue'
+    import VCalendar from '../../components/common/calendar/calendar.vue'
     import BScroll from 'better-scroll';
     const RES_OK = 0;  //请求成功
     export default {
         components: {
             VHeader,
             VSwiper,
-            VArea
+            VArea,
+            VCalendar
+
         },
         data () {
             return {
@@ -192,18 +195,23 @@
                 },
                 show: false,
                 result:{},
+                succDate:{
+                    calendarShow: false,
+                    minDate:new Date(),
+                    maxDate:new Date(new Date().getTime() + 24*60*60*1000*30)
+                },
                 id: '',  //保险参数id
-                advImg:[],  //banner图
-                bxbzdata: [],  //保险保障
-                plan:{}, //保障计划
-                effectdate:{}, //生效时间
-                expirydate: {}, //保障期限
-                plan:{}, //保障计划
-                insuer:{},   //购买人、被保人显示信息
-                userInfo:{}, //接口初始化拉取购买人信息
+                advImg:'',  //banner图
+                bxbzdata: '',  //保险保障
+                plan:'', //保障计划
+                effectdate:'', //生效时间
+                expirydate: '', //保障期限
+                plan:'', //保障计划
+                insuer:'',   //购买人、被保人显示信息
+                userInfo:'', //接口初始化拉取购买人信息
                 isMe: true,  //是否选择本人
                 isDisabled: true, //表单是否可编辑
-                relation:{},
+                relation:'',
                 formData:{
                     planjihua:''||'plan1',    //保险计划
                     effectivedate:'',   //生效时间
@@ -237,6 +245,31 @@
             }
         },
         created(){
+            //初始化生效日期
+            var self = this;
+            this._getJsData('http://hq.sinajs.cn/list=sys_time',function(){
+                var _sys_time = window['hq_str_sys_time'];
+                if(_sys_time){
+                    var myDate = new Date(_sys_time * 1000);
+                    var Y = myDate.getFullYear(),M = myDate.getMonth() + 1,D = myDate.getDate() + 1;
+                    var init = Y +'-' + M + '-' + D;
+                    self.effectdate = init.replace(/\s/g, "");
+                }
+            })
+            this.$http({
+                port : 'getInuranceUserInfo',
+                openLoader:true
+            }).then((res)=>{
+                if(res.code === RES_OK){
+                    this.userInfo = res.data;
+                    this.$nextTick(() => {
+                        setTimeout(()=>{
+                            this.indexScrollSf();
+                        },300)
+                    })
+                }
+            })
+
             this.$http({
                 port : 'getInsuranceInfo',
                 data:{id: this.$route.query.id},
@@ -265,7 +298,7 @@
             //购买人信息
             this.$http({
                 port : 'getInuranceUserInfo',
-                data:{uid: '128915303510'},
+                data:{uid: '12891530351'},
                 openLoader:true
             }).then((res)=>{
                 if(res.code === RES_OK){
@@ -289,6 +322,38 @@
                     deceleration: 0.001,
                 });
             },
+            _initDate(date,fmt){
+                var o = {
+                    "M+": date.getMonth() + 1,
+                    "d+": date.getDate()
+                };
+                if(/(y+)/.test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for(var k in o)
+                    if(new RegExp("(" + k + ")").test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            },
+            _getJsData (e, d, c) {
+                var b = document.createElement("script");
+                if (typeof d === "string") {
+                    b.charset = d
+                }
+                b.onreadystatechange = b.onload = function () {
+                    if (!this.readyState || this.readyState == "loaded" || this.readyState == "complete") {
+                        if (d && typeof d === "function") {
+                            d()
+                        }
+                        if (c && typeof c === "function") {
+                            c()
+                        }
+                        b.onreadystatechange = b.onload = null;
+                        b.parentNode.removeChild(b)
+                    }
+                };
+                b.src = e;
+                document.getElementsByTagName("head")[0].appendChild(b)
+            },
             selectev (e) {
                 e.target.value == 1 ? this.isMe = true : this.isMe = false;
                 this.$nextTick(() => {
@@ -308,8 +373,16 @@
             },
             areaResult: function(show, result){
                 this.show = show;
-                this.result = result
-                console.log(this.result)
+                this.result = result;
+                console.log(this.result);
+                this.$refs.useraddress_inp.value = this.result.province.name;
+            },
+            bzDate(){
+                this.succDate.calendarShow = true;
+            },
+            chooseDate(date){
+                console.log(this._initDate(date,"yyyy-MM-dd"));
+                this.effectdate = this._initDate(date,"yyyy-MM-dd");
             },
 
             tobuy () {
@@ -322,6 +395,7 @@
                     this.formData.useraddress1 = this.$refs.useraddress1_inp.value;
                     this.formData.userbirthday = this.$refs.userbirthday_inp.value;
                     this.formData.useremail = this.$refs.useremail_inp.value;
+                    
                 }
                 if (!this.isMe) {  //添加被保人校验
                     const telReg=/^1[0-9][0-9]\d{8}$/;
@@ -472,7 +546,7 @@
                         pid:this.$route.query.id,
                         uid:'',
                         planjihua: this.formData.planjihua,
-                        effectivedate: this.formData.effectivedate,
+                        effectivedate: this.effectdate,
                         expirydate: this.formData.expirydate,
                         username: this.formData.username,
                         usercardnum: this.formData.usercardnum,

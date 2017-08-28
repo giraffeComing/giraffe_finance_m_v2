@@ -10,5 +10,16 @@ const config = {
     //接口路径
     PORT_URI: isDev ? devUri : devUri,
 
+    //登录
+    login(url){
+        if(!url) return;
+        window.location.href = `${devUri}ssoLogin?p=${url}`
+    },
+
+    loginOut(url){
+        if(!url) return;
+        window.location.href = `${devUri}loginOut?p=${url}`
+    }
+
 };
 export default config;

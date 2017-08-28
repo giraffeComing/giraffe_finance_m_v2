@@ -7,7 +7,7 @@
             <div>
                 <v-total :opts="licaiCount"></v-total>
                 <div class="bg-gray"></div>
-                <v-tab></v-tab>
+                <v-tab @refresh="refreshScroll"></v-tab>
             </div>
         </div>
     </div>
@@ -27,14 +27,14 @@
             VTab,
         },
         created:function () {
-//            this.$http({
-//                port : 'getFixAsset',      // 接口port
-//                url : '',  // 请求完整url 设置此项后 port 失效
-//                method: 'get',                      // 请求方式 默认 get
-//                openLoader:true                     // 是否开启loading 默认关闭
-//            }).then((res)=>{
-//                this.licaiCount = res.data           // 返回请求结果
-//            });
+            this.$http({
+                port : 'getFixAsset',      // 接口port
+                url : '',  // 请求完整url 设置此项后 port 失效
+                method: 'get',                      // 请求方式 默认 get
+                openLoader:true                     // 是否开启loading 默认关闭
+            }).then((res)=>{
+                this.licaiCount = res.data           // 返回请求结果
+            });
         },
         data () {
             return {
@@ -44,9 +44,9 @@
                     backBtn: true
                 },
                 licaiCount: {
-                    total: 10,
-                    amount: 10,
-                    profit: 10
+                    fix_total: 10,
+                    fix_amount: 10,
+                    fix_profit: 10
                 }
             }
         },
@@ -69,6 +69,14 @@
                     deceleration: 0.001,
                 });
             },
+            refreshScroll(){
+
+                this.$nextTick(() => {
+                    setTimeout(()=>{
+                        this.comBodyScrollSf.refresh()
+                    },500)
+                })
+            }
         }
     }
 </script>

@@ -3,7 +3,7 @@
         <div class="header">
             <div class="header-wrap">
                 <div class="login-box">
-                    <span class="login">登录</span>
+                    <span class="login" @click="login">登录</span>
                   <!--| <span class="register">注册</span>-->
                 </div>
                 <div class="logo"><img src="./img/jr_logo.png" alt=""></div>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+    import config from '../../api/config.js'
     import VHeader from '../../components/layout/header/header.vue'
     import VFooter from '../../components/layout/footer/footer.vue'
     import VContainer from '../../components/layout/container/container.vue'
@@ -49,6 +50,7 @@
     import VFundTheme from './fundTheme.vue'
     import VInsurance from './insurance.vue'
     import Toast from '../../components/common/toast/toast.js'
+    
     export default {
         name: '',
         components: {
@@ -82,6 +84,11 @@
             }
         },
         methods: {
+            login(){
+                  alert('当前暂不可用，待上测试环境开启跳转登录')
+//                const url = 'http://jr.sina.cn';
+//                config.login(url.toString())
+            }
         },
         created(){
             this.$nextTick(()=>{

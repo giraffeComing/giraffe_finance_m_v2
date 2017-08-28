@@ -178,21 +178,25 @@
             }
         },
         created(){
-             this.$http({
-                port : 'getFixIndex',
-                openLoader:true
-            }).then((res)=>{
-                if(res.code === RES_OK){
-                    this.banner = res.data[0].contents.map(item => {
-                        return {
-                            imgSrc:item.image,
-                            href:item.url ? item.url : 'JavaScript:;'
-                        }
-                    })
-                    this.huoqi = res.data[1];
-                    this.dingqi = res.data[2];
-                    this.sinazy = res.data[3];
-                }
+            this.$nextTick(() => {
+                this.$http({
+                    port : 'getFixIndex',
+                    openLoader:true
+                }).then((res)=>{
+                    if(res.code === RES_OK){
+                        this.banner = res.data[0].contents.map(item => {
+                            return {
+                                imgSrc:item.image,
+                                href:item.url ? item.url : 'JavaScript:;'
+                            }
+                        })
+                        this.huoqi = res.data[1];
+                        this.dingqi = res.data[2];
+                        this.sinazy = res.data[3];
+                    }else{
+                        Toast(res.msg)
+                    }
+                })
             })
         }
     }

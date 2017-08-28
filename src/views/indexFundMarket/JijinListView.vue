@@ -23,13 +23,15 @@
 <script>
     import VRankList from  './rank/rankList.vue'
     import VSearchList from  './search/searchList.vue'
+    import VRecomList from  './recommend/recomList.vue'
     import Toast from '../../components/common/toast/toast'
-
+    
     export default {
         name: '',
         components: {
           VRankList,
-          VSearchList
+          VSearchList,
+          VRecomList
         },
         data () {
             return {
@@ -37,27 +39,21 @@
                 searchCode:'',
                 showSearch:false,
                 showList:false,
+                recomData:'',
                 optsData : ''
             }
         },
         watch:{
           searchCode(){
-            this.$http({
-              port : 'searchFund',
-              data : {
-                key : this.searchCode,
-                num : '20'
-              }
-            }).then((res)=>{
-              if(res.code == 0){
-                this.optsData = res.data.fund_list.data;
-              }else{
-                Toast(res.msg)
-              }
-            })
+            if(this.searchCode){
+              this.setSearchList();
+            }else{
+              this.setRecomList();
+            }
           }
         },
         created(){
+        
         },
         methods: {
             backTo(){
@@ -65,11 +61,43 @@
             },
             btnShow(){
               this.showSearch = true;
-              this.currentView = 'VSearchList';
+              this.searchCode = '';
+              this.setRecomList();
             },
             btnCancel(){
               this.showSearch = false;
               this.currentView = 'VRankList';
+            },
+            setSearchList(){
+              this.currentView = 'VSearchList';
+              this.$http({
+                port : 'searchFund',
+                data : {
+                  key : this.searchCode,
+                  num : '20'
+                }
+              }).then((res)=>{
+                if(res.code == 0){
+                  this.optsData = res.data.fund_list.data;
+                }else{
+                  Toast(res.msg)
+                }
+              })
+            },
+            setRecomList(){
+              this.currentView = 'VRecomList';
+              if(!this.recomData){
+                this.$http({
+                  port : 'promoteRecommend'
+                }).then((res)=>{
+                  if(res.code == 0){
+                    this.recomData = res.data.list;
+                    this.optsData = this.recomData;
+                  }else{
+                    Toast(res.msg)
+                  }
+                })
+              }
             }
         },
     }

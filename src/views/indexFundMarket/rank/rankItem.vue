@@ -4,9 +4,9 @@
       <div class="row">
         <div class="bar">基金名称</div>
         <div class="bar" v-if="listData.type!=='2'">单位净值</div>
-        <div class="bar" v-if="listData.type!=='2'">日涨跌</div>
+        <div class="bar" v-if="listData.type!=='2'" @click="showTypeList($event)">日涨跌 <i class="icon"></i></div>
         <div class="bar" v-if="listData.type=='2'">万份收益</div>
-        <div class="bar" v-if="listData.type=='2'">年化收益率</div>
+        <div class="bar" v-if="listData.type=='2'" @click="showTypeList($event)">年化收益率 <i class="icon"></i></div>
       </div>
     </div>
     <div class="list-body">
@@ -28,6 +28,7 @@
 
 <script>
   import VEmpty from '../../../components/common/empty/empty.vue'
+  import showDropMenu from '../../../components/common/dropMenu'
   export default {
     name: '',
     components: {
@@ -46,6 +47,13 @@
       },
       getVal(num){
           return num > 0 ? `+${(num*1000000/10000).toFixed(2)}`: (num*1000000/10000).toFixed(2);
+      },
+      showTypeList(e){
+//          console.log(e)
+//          console.log(e.target)
+//          console.log(e.target.offsetTop)
+//          console.log(e.y)
+//        showDropMenu(e);
       }
     },
     data () {
@@ -53,7 +61,8 @@
         emptyData: {
           icon:'type1',
           desc : '暂无记录'
-        }
+        },
+        curItem:0,
       }
     },
     created(){
@@ -83,6 +92,32 @@
           width: 30%;
           padding-right: .2rem;
           text-align: right;
+          
+          .icon{
+            display: inline-block;
+            width: .3rem;
+            height: .16rem;
+            vertical-align: top;
+            margin-top: .16rem;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-image: url("../arror.png");
+            -webkit-transition: transform .3s ease;
+            -moz-transition: transform .3s ease;
+            -ms-transition: transform .3s ease;
+            -o-transition: transform .3s ease;
+            transition: transform .3s ease;
+          }
+          &.active{
+            .icon{
+              -webkit-transform: rotate(180deg);
+              -moz-transform: rotate(180deg);
+              -ms-transform: rotate(180deg);
+              -o-transform: rotate(180deg);
+              transform: rotate(180deg);
+            }
+          }
         }
         
       }

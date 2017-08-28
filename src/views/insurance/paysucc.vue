@@ -7,11 +7,11 @@
           <h2 class="paytit succ">支付成功</h2>
           <div class="info">
             <ul>
-              <li><span class="name">保险产品</span><span class="res">学生平安保障险</span></li>
-              <li><span class="name">保单号</span><span class="res">1025460256</span></li>
-              <li><span class="name">投保单号</span><span class="res">1025460256</span></li>
-              <li><span class="name">下单时间</span><span class="res">2017-08-15</span></li>
-              <li><span class="name">订单号</span><span class="res">1234567895246</span></li>
+              <li><span class="name">保险产品</span><span class="res">{{orderData.name}}</span></li>
+              <li><span class="name">保单号</span><span class="res">{{orderData.inusrenum1}}</span></li>
+              <li><span class="name">投保单号</span><span class="res">{{orderData.inusrenum2}}</span></li>
+              <li><span class="name">下单时间</span><span class="res">{{orderData.time}}</span></li>
+              <li><span class="name">订单号</span><span class="res">{{orderData.ordernum}}</span></li>
             </ul>
           </div>
           <div class="stepwrap">
@@ -31,6 +31,7 @@
   import VStep from '../../components/common/steps/step.vue'
   //    better scroller
   import BScroll from 'better-scroll';
+  const RES_OK = 0;  //请求成功
   export default {
     name: '',
     components: {
@@ -43,25 +44,43 @@
           name: "支付结果",
           backBtn: true
         },
-        comBodyScroll: '',
-        step:{
-          current : 0,
-          list : [
-            {
-              name : "购买支付成功",
-              desc : "2017-08-08 17：00"
-            },
-            {
-              name : "保险公司份额确认",
-              desc : "预计时间：2017-08-08 17：00"
-            },
-            {
-              name : "开始保障",
-              desc : "预计时间：2017-08-08 17：00"
-            }
-          ]
-        }
+        orderData:'',  //订单信息
+        step:''   //进度数据
       }
+    },
+    created(){
+      this.ordernum = this.$route.query.ordernum || '201708221252128800';
+      this.$http({
+            port : 'getinsurancepolicy',
+            data:{ordernum: this.ordernum},
+            openLoader:true
+        }).then((res)=>{
+            if(res.code === RES_OK){
+                this.orderData = res.data[0];
+                this.step = {
+                  current :this.orderData.status,
+                  list : [
+                    {
+                      name : "购买支付成功",
+                      desc : this.orderData.time
+                    },
+                    {
+                      name : "保险公司份额确认",
+                      desc : "预计时间：需跟产品沟通"
+                    },
+                    {
+                      name : "开始保障",
+                      desc : "预计时间：需跟产品沟通"
+                    }
+                  ]
+                }
+                this.$nextTick(() => {
+                    setTimeout(()=>{
+                        this.indexScroll();
+                    },30)
+                })
+            }
+        })
     },
     methods:{
       indexScroll() {
@@ -69,20 +88,15 @@
         let headerH=this.$refs.sfHeader.$el.offsetHeight;
         let footerH=this.$refs.sfFooter.offsetHeight;
         this.$refs.comBody.style.height = pageH - (headerH + footerH) +'px';
-        this.comBodyScrollSf = new BScroll(this.$refs.comBody,{
+        if(!this.comBodyScrollSf){
+          this.comBodyScrollSf = new BScroll(this.$refs.comBody, {
             click: true,
             deceleration: 0.001,
-        });
+          })
+        }else{
+          this.comBodyScrollSf.refresh()
+        }
       }
-    },
-    mounted(){
-      //$nextTick这个方法保证了dom结构加载完成之后再执行
-      this.$nextTick(() => {
-        //结构复杂的地方再加个延迟
-        setTimeout(() => {
-          this.indexScroll();
-        }, 500)
-      })
     }
   }
 </script>

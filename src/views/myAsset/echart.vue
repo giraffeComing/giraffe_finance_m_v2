@@ -1,7 +1,7 @@
 <template>
   <div class="echartWrap" v-if="rendered">
     <div :style="getSize" ref="chartWrap"></div>
-    <div class="info-all">{{chartOption.option.series[0].name}} <span>{{getAllVal}}</span></div>
+    <div class="info-all">{{chartOption.option.series[0].name}} <span>{{chartOption.total}}</span></div>
     <div class="info-list">
       <div class="item" v-for="(item,index) in chartOption.option.series[0].data">
         <i :style="{backgroundColor:chartOption.option.color[index]}"></i>
@@ -24,7 +24,8 @@
       }
     },
     props: {
-      chartOption: ""
+      chartOption: "",
+        refreshEchart:""
     },
     computed:{
       getSize:function () {
@@ -69,7 +70,16 @@
     },
     created() {
       this.rendered = true;
-    }
+    },
+      watch:{
+          refreshEchart:function () {
+
+              const wrap = this.$refs.chartWrap;
+              let chart = ECharts.init(wrap);
+
+              chart.setOption(this.chartOption.option);
+          }
+      }
   }
 </script>
 

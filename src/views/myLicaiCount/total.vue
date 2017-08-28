@@ -2,16 +2,16 @@
     <div class="total">
         <div class="top">
             <div class="title">总资产（元）</div>
-            <div class="num">{{opts.total}}</div>
+            <div class="num">{{opts.fix_total}}</div>
         </div>
         <div class="bottom">
             <div class="block">
                 <p class="des">投资金额（元）</p>
-                <p class="money">{{opts.amount}}</p>
+                <p class="money">{{opts.fix_amount}}</p>
             </div>
             <div class="block">
                 <p class="des">预期收益（元）</p>
-                <p class="money">{{opts.profit}}</p>
+                <p class="money">{{opts.fix_profit}}</p>
             </div>
         </div>
     </div>

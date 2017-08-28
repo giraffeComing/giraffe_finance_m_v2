@@ -26,7 +26,7 @@
       VRankItem
     },
     props : {
-      opts:""
+      optsData:""
     },
     methods:{
       toggle(i){
@@ -96,6 +96,8 @@
       }
     },
     created(){
+//        this.optsData.type
+//      console.log(this.optsData)
       this.getListData(this.tabList[this.now].type)
     }
   }

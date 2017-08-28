@@ -2,7 +2,7 @@
     <div class="page-view">
         <!--header-->
         <v-header :opts="headerData"></v-header>
-        <e-charts :chartOption="chartOption" style="margin-top: 1rem"></e-charts>
+        <e-charts :chartOption="chartOption" :refreshEchart="refreshEchart" style="margin-top: 1rem"></e-charts>
         <div class="asset-title">资产收益曲线</div>
         <v-echarts :opts="echartData.value" :echartSize="echartData.size"></v-echarts>
     </div>
@@ -32,7 +32,9 @@
                     name: "资产总览",
                     backBtn: true
                 },
+                refreshEchart:false,
                 chartOption: {
+                    total:0.00,
                     style:{
                         width:'100%',
                         height:'6rem'
@@ -56,10 +58,10 @@
                                     }
                                 },
                                 data: [
-                                    {name:"私房钱",value:10},
-                                    {name:"理财账户",value:30},
-                                    {name:"保险产品",value:40},
-                                    {name:"基金",value:20}
+                                    {name:"私房宝",value:0},
+                                    {name:"理财账户",value:0},
+                                    {name:"保险账户",value:0},
+                                    {name:"基金",value:0}
                                 ]
                             }
                         ]
@@ -110,6 +112,25 @@
 
         },
         created:function(){
+
+            this.$http({
+                port : 'myUserInfo',      // 接口port
+                url : '',  // 请求完整url 设置此项后 port 失效
+                method: 'get',                      // 请求方式 默认 get
+                openLoader:true                     // 是否开启loading 默认关闭
+            }).then((res)=>{
+
+//                在echart pie中通过对refreshEchart字段进行watch来触发echarts的重绘
+                this.chartOption.total=res.data.asset.total;
+                this.chartOption.option.series[0].data[0].value= parseFloat(res.data.asset.sfbTotal)
+                this.chartOption.option.series[0].data[1].value= parseFloat(res.data.asset.fixTotal)
+//                保险现在还没有字段
+                this.chartOption.option.series[0].data[2].value= 0
+                this.chartOption.option.series[0].data[3].value= parseFloat(res.data.asset.fundTotal)
+                this.refreshEchart=true;
+                // 返回请求结果
+            });
+
 
             let arr=this._getAxisData(this.mockdata)
 //            canvas的绘图数据要在dom结构渲染之前生成

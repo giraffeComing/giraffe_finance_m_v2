@@ -23,7 +23,11 @@
         methods: {
             backTo(){
 //                通过路由返回上一页
-                this.$router.go(-1)
+                if(this.opts.backNum){
+                    this.$router.go(this.opts.backNum)
+                }else{
+                    this.$router.go(-1)
+                }
             },
         }
     }

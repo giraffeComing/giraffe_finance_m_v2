@@ -12,7 +12,9 @@
         <div class="tab-contains">
             <!--过渡效果-->
             <transition mode="out-in" name="fadeIn">
-                <component :is="currentView"></component>
+                <keep-alive>
+                    <component :is="currentView"></component>
+                </keep-alive>
             </transition>
         </div>
     </div>
@@ -47,6 +49,8 @@
             changeTab:function (i,v) {
                 this.idx=i;
                 this.currentView=v
+//                触发BS的刷新放在这里不太合适，应该放在child02里axios的成功回调里面触发，通过bus或者vuex来管理
+                this.$emit('refresh')
             }
         }
     }
